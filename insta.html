@@ -1,42 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0;url=https://www.instagram.com/sasho.brows/">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: white;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 25px;
-            background: white;
-            color: #dc2743;
-            font-weight: bold;
-            transition: background 0.3s, color 0.3s;
-        }
-        button:hover {
-            background: #dc2743;
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>@sasho.brows - перенаправление</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: sans-serif;
+    }
+    body {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(2px);
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: #333;
+    }
+    .logo {
+      width: 100px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 1.2rem;
+    }
+    a {
+      color: #0057ff;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <p>Если вы не были автоматически перенаправлены, нажмите кнопку ниже:</p>
-    <button onclick="window.location.href='https://www.instagram.com/sasho.brows/'">@SASHO.BROWS</button>
+  <div class="content">
+
+    <div class="message" id="status">
+      Загрузка…
+      <noscript>
+        <br>Если вы не были автоматически перенаправлены, нажмите кнопку:  <a href="https://www.instagram.com/sasho.brows/">@sasho.brows</a>.
+      </noscript>
+    </div>
+  </div>
+
+  <script>
+    const fallbackUrl = "https://www.instagram.com/sasho.brows/";
+    const apiBaseUrl = "https://n8n.konsalt.by/webhook/redirects";
+    const currentUrl = window.location.href;
+    const apiUrl = apiBaseUrl + "?current=" + encodeURIComponent(currentUrl);
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          document.getElementById('status').innerHTML =
+            `Если вы не были автоматически перенаправлены, нажмите кнопку:  <a href="${fallbackUrl}">@sasho.brows</a>.`;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('status').innerHTML =
+          `Если вы не были автоматически перенаправлены, нажмите кнопку:  <a href="${fallbackUrl}">@sasho.brows</a>.`;
+      });
+  </script>
 </body>
 </html>
